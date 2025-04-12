@@ -57,7 +57,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    public func startChat(parameters: ChatCompletionParameters) async throws -> ChatCompletionObject {
       var chatParameters = parameters
       chatParameters.stream = false
-      let request = try AzureOpenAIAPI.chat(deploymentID: parameters.model).request(
+      let request = try AzureOpenAIAPI.chat(deploymentID: parameters.model).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -70,7 +70,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    public func startStreamedChat(parameters: ChatCompletionParameters) async throws -> AsyncThrowingStream<ChatCompletionChunkObject, Error> {
       var chatParameters = parameters
       chatParameters.stream = true
-      let request = try AzureOpenAIAPI.chat(deploymentID: parameters.model).request(
+      let request = try AzureOpenAIAPI.chat(deploymentID: parameters.model).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -158,7 +158,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func createAssistant(parameters: AssistantParameters) async throws -> AssistantObject {
-      let request = try AzureOpenAIAPI.assistant(.create).request(
+      let request = try AzureOpenAIAPI.assistant(.create).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -172,7 +172,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func retrieveAssistant(id: String) async throws -> AssistantObject {
-      let request = try AzureOpenAIAPI.assistant(.retrieve(assistantID: id)).request(
+      let request = try AzureOpenAIAPI.assistant(.retrieve(assistantID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -185,7 +185,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func modifyAssistant(id: String, parameters: AssistantParameters) async throws -> AssistantObject {
-      let request = try AzureOpenAIAPI.assistant(.modify(assistantID: id)).request(
+      let request = try AzureOpenAIAPI.assistant(.modify(assistantID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -199,7 +199,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func deleteAssistant(id: String) async throws -> DeletionStatus {
-      let request = try AzureOpenAIAPI.assistant(.delete(assistantID: id)).request(
+      let request = try AzureOpenAIAPI.assistant(.delete(assistantID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -225,7 +225,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       if let before {
          queryItems.append(.init(name: "before", value: before))
       }
-      let request = try AzureOpenAIAPI.assistant(.list).request(
+      let request = try AzureOpenAIAPI.assistant(.list).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -238,7 +238,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func createThread(parameters: CreateThreadParameters) async throws -> ThreadObject {
-      let request = try AzureOpenAIAPI.thread(.create).request(
+      let request = try AzureOpenAIAPI.thread(.create).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -251,7 +251,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func retrieveThread(id: String) async throws -> ThreadObject {
-      let request = try AzureOpenAIAPI.thread(.retrieve(threadID: id)).request(
+      let request = try AzureOpenAIAPI.thread(.retrieve(threadID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -263,7 +263,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func modifyThread(id: String, parameters: ModifyThreadParameters) async throws -> ThreadObject {
-      let request = try AzureOpenAIAPI.thread(.modify(threadID: id)).request(
+      let request = try AzureOpenAIAPI.thread(.modify(threadID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -276,7 +276,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func deleteThread(id: String) async throws -> DeletionStatus {
-      let request = try AzureOpenAIAPI.thread(.delete(threadID: id)).request(
+      let request = try AzureOpenAIAPI.thread(.delete(threadID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -288,7 +288,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func createMessage(threadID: String, parameters: MessageParameter) async throws -> MessageObject {
-      let request = try AzureOpenAIAPI.message(.create(threadID: threadID)).request(
+      let request = try AzureOpenAIAPI.message(.create(threadID: threadID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -301,7 +301,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func retrieveMessage(threadID: String, messageID: String) async throws -> MessageObject {
-      let request = try AzureOpenAIAPI.message(.retrieve(threadID: threadID, messageID: messageID)).request(
+      let request = try AzureOpenAIAPI.message(.retrieve(threadID: threadID, messageID: messageID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -313,7 +313,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func modifyMessage(threadID: String, messageID: String, parameters: ModifyMessageParameters) async throws -> MessageObject {
-      let request = try AzureOpenAIAPI.message(.modify(threadID: threadID, messageID: messageID)).request(
+      let request = try AzureOpenAIAPI.message(.modify(threadID: threadID, messageID: messageID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -330,7 +330,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       messageID: String)
       async throws -> DeletionStatus
    {
-      let request = try AzureOpenAIAPI.message(.delete(threadID: threadID, messageID: messageID)).request(
+      let request = try AzureOpenAIAPI.message(.delete(threadID: threadID, messageID: messageID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -358,7 +358,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       if let runID {
          queryItems.append(.init(name: "run_id", value: runID))
       }
-      let request = try AzureOpenAIAPI.message(.list(threadID: threadID)).request(
+      let request = try AzureOpenAIAPI.message(.list(threadID: threadID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -370,7 +370,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func createRun(threadID: String, parameters: RunParameter) async throws -> RunObject {
-      let request = try AzureOpenAIAPI.run(.create(threadID: threadID)).request(
+      let request = try AzureOpenAIAPI.run(.create(threadID: threadID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -383,7 +383,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func retrieveRun(threadID: String, runID: String) async throws -> RunObject {
-      let request = try AzureOpenAIAPI.run(.retrieve(threadID: threadID, runID: runID)).request(
+      let request = try AzureOpenAIAPI.run(.retrieve(threadID: threadID, runID: runID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -395,7 +395,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func modifyRun(threadID: String, runID: String, parameters: ModifyRunParameters) async throws -> RunObject {
-      let request = try AzureOpenAIAPI.run(.modify(threadID: threadID, runID: runID)).request(
+      let request = try AzureOpenAIAPI.run(.modify(threadID: threadID, runID: runID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -421,7 +421,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       if let before {
          queryItems.append(.init(name: "before", value: before))
       }
-      let request = try AzureOpenAIAPI.run(.list(threadID: threadID)).request(
+      let request = try AzureOpenAIAPI.run(.list(threadID: threadID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -433,7 +433,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func cancelRun(threadID: String, runID: String) async throws -> RunObject {
-      let request = try AzureOpenAIAPI.run(.cancel(threadID: threadID, runID: runID)).request(
+      let request = try AzureOpenAIAPI.run(.cancel(threadID: threadID, runID: runID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -445,7 +445,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func submitToolOutputsToRun(threadID: String, runID: String, parameters: RunToolsOutputParameter) async throws -> RunObject {
-      let request = try AzureOpenAIAPI.run(.submitToolOutput(threadID: threadID, runID: runID)).request(
+      let request = try AzureOpenAIAPI.run(.submitToolOutput(threadID: threadID, runID: runID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -458,7 +458,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func createThreadAndRun(parameters: CreateThreadAndRunParameter) async throws -> RunObject {
-      let request = try AzureOpenAIAPI.run(.createThreadAndRun).request(
+      let request = try AzureOpenAIAPI.run(.createThreadAndRun).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -471,7 +471,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func retrieveRunstep(threadID: String, runID: String, stepID: String) async throws -> RunStepObject {
-      let request = try OpenAIAPI.runStep(.retrieve(threadID: threadID, runID: runID, stepID: stepID)).request(
+      let request = try OpenAIAPI.runStep(.retrieve(threadID: threadID, runID: runID, stepID: stepID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -496,7 +496,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       if let before {
          queryItems.append(.init(name: "before", value: before))
       }
-      let request = try AzureOpenAIAPI.runStep(.list(threadID: threadID, runID: runID)).request(
+      let request = try AzureOpenAIAPI.runStep(.list(threadID: threadID, runID: runID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -513,7 +513,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    {
       var runParameters = parameters
       runParameters.stream = true
-      let request = try AzureOpenAIAPI.run(.createThreadAndRun).request(
+      let request = try AzureOpenAIAPI.run(.createThreadAndRun).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -532,7 +532,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    {
       var runParameters = parameters
       runParameters.stream = true
-      let request = try AzureOpenAIAPI.run(.create(threadID: threadID)).request(
+      let request = try AzureOpenAIAPI.run(.create(threadID: threadID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -552,7 +552,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    {
       var runToolsOutputParameter = parameters
       runToolsOutputParameter.stream = true
-      let request = try AzureOpenAIAPI.run(.submitToolOutput(threadID: threadID, runID: runID)).request(
+      let request = try AzureOpenAIAPI.run(.submitToolOutput(threadID: threadID, runID: runID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -600,7 +600,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       parameters: VectorStoreParameter)
       async throws -> VectorStoreObject
    {
-      let request = try AzureOpenAIAPI.vectorStore(.create).request(
+      let request = try AzureOpenAIAPI.vectorStore(.create).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -632,7 +632,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       if let before {
          queryItems.append(.init(name: "before", value: before))
       }
-      let request = try AzureOpenAIAPI.vectorStore(.list).request(
+      let request = try AzureOpenAIAPI.vectorStore(.list).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -647,7 +647,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       id: String) async throws
       -> VectorStoreObject
    {
-      let request = try AzureOpenAIAPI.vectorStore(.retrieve(vectorStoreID: id)).request(
+      let request = try AzureOpenAIAPI.vectorStore(.retrieve(vectorStoreID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -663,7 +663,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       id: String)
       async throws -> VectorStoreObject
    {
-      let request = try AzureOpenAIAPI.vectorStore(.modify(vectorStoreID: id)).request(
+      let request = try AzureOpenAIAPI.vectorStore(.modify(vectorStoreID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -679,7 +679,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       id: String)
       async throws -> DeletionStatus
    {
-      let request = try AzureOpenAIAPI.vectorStore(.delete(vectorStoreID: id)).request(
+      let request = try AzureOpenAIAPI.vectorStore(.delete(vectorStoreID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -693,7 +693,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    // MARK: Vector Store Files
    
    public func createVectorStoreFile(vectorStoreID: String, parameters: VectorStoreFileParameter) async throws -> VectorStoreFileObject {
-      let request = try AzureOpenAIAPI.vectorStoreFile(.create(vectorStoreID: vectorStoreID)).request(
+      let request = try AzureOpenAIAPI.vectorStoreFile(.create(vectorStoreID: vectorStoreID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -722,7 +722,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       if let filter {
          queryItems.append(.init(name: "filter", value: filter))
       }
-      let request = try AzureOpenAIAPI.vectorStoreFile(.list(vectorStoreID: vectorStoreID)).request(
+      let request = try AzureOpenAIAPI.vectorStoreFile(.list(vectorStoreID: vectorStoreID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -734,7 +734,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func retrieveVectorStoreFile(vectorStoreID: String, fileID: String) async throws -> VectorStoreFileObject {
-      let request = try AzureOpenAIAPI.vectorStoreFile(.retrieve(vectorStoreID: vectorStoreID, fileID: fileID)).request(
+      let request = try AzureOpenAIAPI.vectorStoreFile(.retrieve(vectorStoreID: vectorStoreID, fileID: fileID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -746,7 +746,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    }
    
    public func deleteVectorStoreFile(vectorStoreID: String, fileID: String) async throws -> DeletionStatus {
-      let request = try AzureOpenAIAPI.vectorStoreFile(.delete(vectorStoreID: vectorStoreID, fileID: fileID)).request(
+      let request = try AzureOpenAIAPI.vectorStoreFile(.delete(vectorStoreID: vectorStoreID, fileID: fileID)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -781,7 +781,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
    {
       var responseParameters = parameters
       responseParameters.stream = false
-      let request = try AzureOpenAIAPI.response(.create(deploymentID: parameters.model)).request(
+      let request = try AzureOpenAIAPI.response(.create(deploymentID: parameters.model)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
@@ -795,7 +795,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       id: String)
       async throws -> ResponseModel
    {
-      let request = try AzureOpenAIAPI.response(.retrieve(responseID: id)).request(
+      let request = try AzureOpenAIAPI.response(.retrieve(responseID: id)).requestAzure(
          apiKey: apiKey,
          openAIEnvironment: openAIEnvironment,
          organizationID: nil,
