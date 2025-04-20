@@ -68,7 +68,7 @@ public enum OutputItem: Decodable {
       /// The role of the output message. Always "assistant"
       public let role: String
       /// The status of the message input. One of "in_progress", "completed", or "incomplete"
-      public let status: String
+      public let status: String?
       /// The type of the output message. Always "message"
       public let type: String
       
@@ -134,7 +134,7 @@ public enum OutputItem: Decodable {
       /// The queries used to search for files
       public let queries: [String]
       /// The status of the file search tool call
-      public let status: String
+      public let status: String?
       /// The type of the file search tool call. Always "file_search_call"
       public let type: String
       /// The results of the file search tool call
@@ -165,7 +165,7 @@ public enum OutputItem: Decodable {
       /// The unique ID of the function tool call
       public let id: String
       /// The status of the item. One of "in_progress", "completed", or "incomplete"
-      public let status: String
+      public let status: String?
       
       enum CodingKeys: String, CodingKey {
          case arguments, callId = "call_id", name, type, id, status
@@ -179,7 +179,7 @@ public enum OutputItem: Decodable {
       /// The unique ID of the web search tool call
       public let id: String
       /// The status of the web search tool call
-      public let status: String
+      public let status: String?
       /// The type of the web search tool call. Always "web_search_call"
       public let type: String
       
@@ -201,7 +201,7 @@ public enum OutputItem: Decodable {
       /// The pending safety checks for the computer call
       public let pendingSafetyChecks: [SafetyCheck]
       /// The status of the item
-      public let status: String
+      public let status: String?
       /// The type of the computer call. Always "computer_call"
       public let type: String
       
@@ -337,7 +337,7 @@ public enum OutputItem: Decodable {
       /// The type of the object. Always "reasoning"
       public let type: String
       /// The status of the item
-      public let status: String
+      public let status: String?
       
       /// Summary content in reasoning
       public struct SummaryItem: Decodable {
