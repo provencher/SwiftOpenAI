@@ -71,8 +71,10 @@ public struct InputItem: Codable {
 
 /// Content item types for messages
 public enum ContentItem: Codable {
-    /// Text content
-    case text(TextContent)
+    /// Text content coming from the user / system
+    case text(TextContent)                  // "input_text"
+    /// Text content coming from the assistant
+    case outputText(OutputTextContent)      // "output_text"
     
     /// Image URL content
     case imageUrl(ImageUrlContent)
@@ -91,6 +93,8 @@ public enum ContentItem: Codable {
         
         switch self {
         case .text(let text):
+            try container.encode(text)
+        case .outputText(let text):
             try container.encode(text)
         case .imageUrl(let image):
             try container.encode(image)
@@ -112,6 +116,8 @@ public enum ContentItem: Codable {
         switch type {
         case "input_text":
             self = .text(try singleValueContainer.decode(TextContent.self))
+        case "output_text":
+            self = .outputText(try singleValueContainer.decode(OutputTextContent.self))
         case "input_image":
             self = .imageUrl(try singleValueContainer.decode(ImageUrlContent.self))
         case "input_file":
@@ -151,6 +157,25 @@ public struct TextContent: Codable {
         self.text = text
     }
     
+    enum CodingKeys: String, CodingKey {
+        case text
+        case type
+    }
+}
+
+// MARK: OutputTextContent
+/// Text that comes from the assistant in the conversation history.
+public struct OutputTextContent: Codable {
+    /// The assistant text content
+    public let text: String
+
+    /// The type of content, always "output_text"
+    public let type: String = "output_text"
+
+    public init(text: String) {
+        self.text = text
+    }
+
     enum CodingKeys: String, CodingKey {
         case text
         case type

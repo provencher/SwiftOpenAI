@@ -8,25 +8,29 @@
 import Foundation
 
 public struct ChatUsage: Decodable {
-   /// Number of tokens in the prompt
-   public let promptTokens: Int?
-   /// Number of tokens in the generated completion
-   public let completionTokens: Int?
-   /// Total number of tokens used in the request (prompt + completion)
-   public let totalTokens: Int?
-   /// Detailed breakdown of prompt tokens
-   public let promptTokensDetails: PromptTokenDetails?
-   /// Detailed breakdown of completion tokens
-   public let completionTokensDetails: CompletionTokenDetails?
-   
-   enum CodingKeys: String, CodingKey {
-      case promptTokens = "prompt_tokens"
-      case completionTokens = "completion_tokens"
-      case totalTokens = "total_tokens"
-      case promptTokensDetails = "prompt_tokens_details"
-      case completionTokensDetails = "completion_tokens_details"
-   }
+	/// Number of tokens in the prompt
+	public let promptTokens: Int?
+	/// Number of tokens in the generated completion
+	public let completionTokens: Int?
+	/// Total number of tokens used in the request (prompt + completion)
+	public let totalTokens: Int?
+	/// Cost associated with the request
+	public let cost: Double?
+	/// Detailed breakdown of prompt tokens
+	public let promptTokensDetails: PromptTokenDetails?
+	/// Detailed breakdown of completion tokens
+	public let completionTokensDetails: CompletionTokenDetails?
+	
+	enum CodingKeys: String, CodingKey {
+		case promptTokens = "prompt_tokens"
+		case completionTokens = "completion_tokens"
+		case totalTokens = "total_tokens"
+		case cost = "cost"
+		case promptTokensDetails = "prompt_tokens_details"
+		case completionTokensDetails = "completion_tokens_details"
+	}
 }
+
 
 public struct PromptTokenDetails: Decodable {
    /// Number of tokens retrieved from cache
