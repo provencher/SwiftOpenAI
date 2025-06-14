@@ -93,7 +93,7 @@ extension Endpoint {
 		let basePath = components.path            // could be "", "/proxy", or "/openai.azure.com"
 		let cleanedEndpointPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
 		
-		// --- FIX: keep basePath unless it is the special Azure placeholder "/openai.azure.com" ---
+		// keep basePath unless it is the special Azure placeholder "/openai.azure.com" ---
 		let mustDropBasePath = basePath.contains(".azure.com")   // ⇦ Azure special-case
 
 		let finalPath: String
