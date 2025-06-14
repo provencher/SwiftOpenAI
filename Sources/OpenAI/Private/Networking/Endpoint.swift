@@ -82,18 +82,40 @@ extension Endpoint {
     return request
   }
 
-  private func urlComponents(
-    base: String,
-    path: String,
-    queryItems: [URLQueryItem])
-    -> URLComponents
-  {
-    var components = URLComponents(string: base)!
-    components.path = path
-    if !queryItems.isEmpty {
-      components.queryItems = queryItems
-    }
-    return components
-  }
+	private func urlComponents(
+		base: String,
+		path: String,
+		queryItems: [URLQueryItem])
+	-> URLComponents
+	{
+		var components = URLComponents(string: base)!
+		
+		let basePath = components.path            // could be "", "/proxy", or "/openai.azure.com"
+		let cleanedEndpointPath = path.hasPrefix("/") ? String(path.dropFirst()) : path
+		
+		// --- FIX: keep basePath unless it is the special Azure placeholder "/openai.azure.com" ---
+		let mustDropBasePath = basePath.contains(".azure.com")   // ⇦ Azure special-case
 
+		let finalPath: String
+		if mustDropBasePath {
+			// Azure: discard the placeholder path entirely
+			finalPath = "/" + cleanedEndpointPath
+		} else {
+			if basePath.isEmpty {
+				// Normal OpenAI (or proxy with empty path) → ensure leading slash
+				finalPath = "/" + cleanedEndpointPath
+			} else {
+				// Proxy etc. that already has a base path – preserve it and append
+				let separator = basePath.hasSuffix("/") ? "" : "/"
+				finalPath = basePath + separator + cleanedEndpointPath
+			}
+		}
+
+		components.path = finalPath
+		
+		if !queryItems.isEmpty {
+			components.queryItems = queryItems
+		}
+		return components
+	}
 }
