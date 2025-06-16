@@ -103,6 +103,7 @@ struct DefaultOpenAIService: OpenAIService {
   {
     var chatParameters = parameters
     chatParameters.stream = true
+	chatParameters.streamOptions = .init(includeUsage: true)
     let request = try OpenAIAPI.chat.request(
       apiKey: apiKey,
       openAIEnvironment: openAIEnvironment,
