@@ -1081,23 +1081,38 @@ public struct ReasoningSummaryDoneEvent: Decodable {
   }
 }
 
-// MARK: - ErrorEvent
-
+// MARK: - ErrorEvent                              ⬅️ modified
 /// Emitted when an error occurs
 public struct ErrorEvent: Decodable {
-  public let type: String
-  public let code: String?
-  public let message: String
-  public let param: String?
-  public let sequenceNumber: Int?
-
-  enum CodingKeys: String, CodingKey {
-    case type
-    case code
-    case message
-    case param
-    case sequenceNumber = "sequence_number"
-  }
+	
+	/// The SSE event type – always `"error"`
+	public let type: String
+	
+	/// Optional error code returned by the API
+	public let code: String?
+	
+	/// Optional error message returned by the API
+	/// 👉 Was `let message: String` (non-optional) – caused decoding
+	///    to fail when the field is absent.
+	public let message: String?
+	
+	/// Optional parameter that triggered the error
+	public let param: String?
+	
+	/// Sequence number of the event (may be missing)
+	public let sequenceNumber: Int?
+	
+	enum CodingKeys: String, CodingKey {
+		case type, code, message, param
+		case sequenceNumber = "sequence_number"
+	}
+	
+	/// Convenience text that can be bubbled up to the UI/logs
+	public var prettyDescription: String {
+		if let message { return message }
+		if let code { return "OpenAI error (\(code))" }
+		return "OpenAI error (no additional details)"
+	}
 }
 
 // MARK: - StreamOutputItem
