@@ -38,7 +38,7 @@ public struct ChatCompletionChunkObject: Decodable {
       }
     }
 
-    public struct LogProb: Decodable {
+    public struct LogProbObject: Decodable {
       /// A list of message content tokens with log probability information.
       let content: [TokenDetail]?
     }
@@ -83,7 +83,7 @@ public struct ChatCompletionChunkObject: Decodable {
     /// Provided by the Vision API.
     public let finishDetails: FinishDetails?
     /// Log probability information for the choice.
-    public let logprobs: LogProb?
+    public let logprobs: FlexibleLogProb?
 
     enum CodingKeys: String, CodingKey {
       case delta
@@ -91,6 +91,46 @@ public struct ChatCompletionChunkObject: Decodable {
       case index
       case finishDetails = "finish_details"
       case logprobs
+    }
+    
+    /// Accepts multiple shapes for `logprobs` to avoid typeMismatch errors when providers return non-object values.
+    public enum FlexibleLogProb: Decodable {
+      case object(LogProbObject)
+      case none
+      
+      public var content: [TokenDetail]? {
+        switch self {
+        case .object(let o): return o.content
+        case .none: return nil
+        }
+      }
+      
+      public init(from decoder: Decoder) throws {
+        let c = try decoder.singleValueContainer()
+        if c.decodeNil() {
+          self = .none
+          return
+        }
+        if let obj = try? c.decode(LogProbObject.self) {
+          self = .object(obj)
+          return
+        }
+        // Tolerate non-object shapes (bool/number/string) by treating as none
+        if (try? c.decode(Bool.self)) != nil {
+          self = .none
+          return
+        }
+        if (try? c.decode(Double.self)) != nil {
+          self = .none
+          return
+        }
+        if (try? c.decode(String.self)) != nil {
+          self = .none
+          return
+        }
+        // Default to none to be resilient
+        self = .none
+      }
     }
   }
 
