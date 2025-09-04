@@ -18,7 +18,8 @@ struct DefaultOpenAIService: OpenAIService {
     extraHeaders: [String: String]? = nil,
     configuration: URLSessionConfiguration,
     decoder: JSONDecoder = .init(),
-    debugEnabled: Bool)
+	debugEnabled: Bool,
+	includeUsageInStream: Bool = true)
   {
     session = URLSession(configuration: configuration)
     self.decoder = decoder
@@ -30,11 +31,13 @@ struct DefaultOpenAIService: OpenAIService {
       proxyPath: proxyPath,
       version: overrideVersion ?? "v1")
     self.debugEnabled = debugEnabled
+	self.includeUsageInStream = includeUsageInStream
   }
 
   let session: URLSession
   let decoder: JSONDecoder
   let openAIEnvironment: OpenAIEnvironment
+	let includeUsageInStream: Bool
 
   // MARK: Audio
 
@@ -103,7 +106,9 @@ struct DefaultOpenAIService: OpenAIService {
   {
     var chatParameters = parameters
     chatParameters.stream = true
-	chatParameters.streamOptions = .init(includeUsage: true)
+	if includeUsageInStream && chatParameters.streamOptions == nil {
+		chatParameters.streamOptions = .init(includeUsage: true)
+	}
     let request = try OpenAIAPI.chat.request(
       apiKey: apiKey,
       openAIEnvironment: openAIEnvironment,

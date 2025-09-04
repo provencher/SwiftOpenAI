@@ -24,7 +24,8 @@ public class OpenAIServiceFactory {
     organizationID: String? = nil,
     configuration: URLSessionConfiguration = .default,
     decoder: JSONDecoder = .init(),
-    debugEnabled: Bool = false)
+    debugEnabled: Bool = false,
+    includeUsageInStream: Bool = true)
     -> OpenAIService
   {
     DefaultOpenAIService(
@@ -32,7 +33,8 @@ public class OpenAIServiceFactory {
       organizationID: organizationID,
       configuration: configuration,
       decoder: decoder,
-      debugEnabled: debugEnabled)
+      debugEnabled: debugEnabled,
+      includeUsageInStream: includeUsageInStream)
   }
 
   // MARK: Azure
@@ -141,6 +143,7 @@ public class OpenAIServiceFactory {
     proxyPath: String? = nil,
     overrideVersion: String? = nil,
     extraHeaders: [String: String]? = nil,
+    includeUsageInStream: Bool = true,
     debugEnabled: Bool = false)
     -> OpenAIService
   {
@@ -151,6 +154,7 @@ public class OpenAIServiceFactory {
       overrideVersion: overrideVersion,
       extraHeaders: extraHeaders,
       configuration: configuration,
-      debugEnabled: debugEnabled)
+      debugEnabled: debugEnabled,
+      includeUsageInStream: includeUsageInStream)
   }
 }
