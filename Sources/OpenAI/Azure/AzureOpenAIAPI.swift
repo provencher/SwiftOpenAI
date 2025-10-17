@@ -150,7 +150,7 @@ extension AzureOpenAIAPI: Endpoint {
 
     case .response(let category):
       switch category {
-      case .create(let deploymentID): "/openai/deployments/\(deploymentID)/responses"
+      case .create: "/openai/responses"
       case .retrieve(let responseID): "/openai/responses/\(responseID)"
       }
     }
