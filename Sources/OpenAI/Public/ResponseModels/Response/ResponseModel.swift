@@ -74,6 +74,12 @@ public struct ResponseModel: Decodable {
         }
     }
 
+    /// Conversation reference for multi-turn conversations
+    public struct Conversation: Decodable {
+        /// The unique identifier of the conversation
+        public let id: String?
+    }
+
     /// Whether to run the model response in the background. Learn more.
     public let background: Bool?
 
@@ -200,8 +206,6 @@ public struct ResponseModel: Decodable {
                     switch contentItem {
                     case .outputText(let outputText):
                         return outputText.text
-                    case .refusal:
-                        return nil
                     }
                 }.joined()
 
