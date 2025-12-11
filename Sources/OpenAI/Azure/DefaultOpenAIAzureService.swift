@@ -905,16 +905,69 @@ final public class DefaultOpenAIAzureService: OpenAIService {
   }
 
   public func responseModel(
-    id: String)
+    id: String,
+    parameters: GetResponseParameter? = nil)
     async throws -> ResponseModel
   {
+    var queryItems = initialQueryItems
+
+    if let parameters {
+      if let include = parameters.include {
+        for item in include {
+          queryItems.append(URLQueryItem(name: "include", value: item))
+        }
+      }
+      if let includeObfuscation = parameters.includeObfuscation {
+        queryItems.append(URLQueryItem(name: "include_obfuscation", value: String(includeObfuscation)))
+      }
+      if let startingAfter = parameters.startingAfter {
+        queryItems.append(URLQueryItem(name: "starting_after", value: String(startingAfter)))
+      }
+      if let stream = parameters.stream {
+        queryItems.append(URLQueryItem(name: "stream", value: String(stream)))
+      }
+    }
+
     let request = try AzureOpenAIAPI.response(.retrieve(responseID: id)).request(
       apiKey: apiKey,
       openAIEnvironment: openAIEnvironment,
       organizationID: nil,
       method: .post,
-      queryItems: initialQueryItems)
+      queryItems: queryItems)
     return try await fetch(debugEnabled: debugEnabled, type: ResponseModel.self, with: request)
+  }
+
+  public func responseModelStream(
+    id: String,
+    parameters: GetResponseParameter? = nil)
+    async throws -> AsyncThrowingStream<ResponseStreamEvent, Error>
+  {
+    var streamParameters = parameters ?? GetResponseParameter()
+    streamParameters.stream = true
+
+    var queryItems = initialQueryItems
+    if let include = streamParameters.include {
+      for item in include {
+        queryItems.append(URLQueryItem(name: "include", value: item))
+      }
+    }
+    if let includeObfuscation = streamParameters.includeObfuscation {
+      queryItems.append(URLQueryItem(name: "include_obfuscation", value: String(includeObfuscation)))
+    }
+    if let startingAfter = streamParameters.startingAfter {
+      queryItems.append(URLQueryItem(name: "starting_after", value: String(startingAfter)))
+    }
+    if let stream = streamParameters.stream {
+      queryItems.append(URLQueryItem(name: "stream", value: String(stream)))
+    }
+
+    let request = try AzureOpenAIAPI.response(.retrieve(responseID: id)).request(
+      apiKey: apiKey,
+      openAIEnvironment: openAIEnvironment,
+      organizationID: nil,
+      method: .post,
+      queryItems: queryItems)
+    return try await fetchStream(debugEnabled: debugEnabled, type: ResponseStreamEvent.self, with: request)
   }
 
   public func responseCreateStream(
@@ -931,6 +984,65 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       params: responseParameters,
       queryItems: initialQueryItems)
     return try await fetchStream(debugEnabled: debugEnabled, type: ResponseStreamEvent.self, with: request)
+  }
+
+  public func responseDelete(
+    id: String)
+    async throws -> DeletionStatus
+  {
+    let request = try AzureOpenAIAPI.response(.delete(responseID: id)).request(
+      apiKey: apiKey,
+      openAIEnvironment: openAIEnvironment,
+      organizationID: nil,
+      method: .delete,
+      queryItems: initialQueryItems)
+    return try await fetch(debugEnabled: debugEnabled, type: DeletionStatus.self, with: request)
+  }
+
+  public func responseCancel(
+    id: String)
+    async throws -> ResponseModel
+  {
+    let request = try AzureOpenAIAPI.response(.cancel(responseID: id)).request(
+      apiKey: apiKey,
+      openAIEnvironment: openAIEnvironment,
+      organizationID: nil,
+      method: .post,
+      queryItems: initialQueryItems)
+    return try await fetch(debugEnabled: debugEnabled, type: ResponseModel.self, with: request)
+  }
+
+  public func responseInputItems(
+    id: String,
+    parameters: GetInputItemsParameter?)
+    async throws -> OpenAIResponse<InputItem>
+  {
+    var queryItems = initialQueryItems
+
+    if let parameters {
+      if let after = parameters.after {
+        queryItems.append(URLQueryItem(name: "after", value: after))
+      }
+      if let include = parameters.include {
+        for item in include {
+          queryItems.append(URLQueryItem(name: "include", value: item))
+        }
+      }
+      if let limit = parameters.limit {
+        queryItems.append(URLQueryItem(name: "limit", value: String(limit)))
+      }
+      if let order = parameters.order {
+        queryItems.append(URLQueryItem(name: "order", value: order))
+      }
+    }
+
+    let request = try AzureOpenAIAPI.response(.inputItems(responseID: id)).request(
+      apiKey: apiKey,
+      openAIEnvironment: openAIEnvironment,
+      organizationID: nil,
+      method: .get,
+      queryItems: queryItems)
+    return try await fetch(debugEnabled: debugEnabled, type: OpenAIResponse<InputItem>.self, with: request)
   }
 
   private static let assistantsBetaV2 = "assistants=v2"
