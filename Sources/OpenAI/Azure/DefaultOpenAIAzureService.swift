@@ -932,7 +932,7 @@ final public class DefaultOpenAIAzureService: OpenAIService {
       apiKey: apiKey,
       openAIEnvironment: openAIEnvironment,
       organizationID: nil,
-      method: .post,
+      method: .get,
       queryItems: queryItems)
     return try await fetch(debugEnabled: debugEnabled, type: ResponseModel.self, with: request)
   }
