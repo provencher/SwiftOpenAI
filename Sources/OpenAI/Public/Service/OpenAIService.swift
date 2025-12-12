@@ -989,9 +989,21 @@ public protocol OpenAIService {
   /// [The Response object matching the specified ID.](https://platform.openai.com/docs/api-reference/responses/get)
   ///
   /// - Parameter id: The ID of the ResponseModel
+  /// - Parameter parameters: Optional query parameters for the request
   func responseModel(
-    id: String)
+    id: String,
+    parameters: GetResponseParameter?)
     async throws -> ResponseModel
+
+  /// Returns a streaming [Response](https://platform.openai.com/docs/api-reference/responses/get) object for a specific response ID.
+  ///
+  /// - Parameter id: The ID of the ResponseModel
+  /// - Parameter parameters: Optional query parameters for the request (stream will be set to true)
+  /// - Returns: An AsyncThrowingStream of ResponseStreamEvent objects
+  func responseModelStream(
+    id: String,
+    parameters: GetResponseParameter?)
+    async throws -> AsyncThrowingStream<ResponseStreamEvent, Error>
 
   /// Returns a streaming [Response](https://platform.openai.com/docs/api-reference/responses/object) object.
   ///
@@ -1000,6 +1012,33 @@ public protocol OpenAIService {
   func responseCreateStream(
     _ parameters: ModelResponseParameter)
     async throws -> AsyncThrowingStream<ResponseStreamEvent, Error>
+
+  /// [Deletes a model response with the given ID.](https://platform.openai.com/docs/api-reference/responses/delete)
+  ///
+  /// - Parameter id: The ID of the response to delete
+  /// - Returns: A DeletionStatus object confirming the deletion
+  func responseDelete(
+    id: String)
+    async throws -> DeletionStatus
+
+  /// [Cancels a model response with the given ID.](https://platform.openai.com/docs/api-reference/responses/cancel)
+  /// Only responses created with the background parameter set to true can be cancelled.
+  ///
+  /// - Parameter id: The ID of the response to cancel
+  /// - Returns: A Response object
+  func responseCancel(
+    id: String)
+    async throws -> ResponseModel
+
+  /// [Returns a list of input items for a given response.](https://platform.openai.com/docs/api-reference/responses/input-items)
+  ///
+  /// - Parameter id: The ID of the response to retrieve input items for
+  /// - Parameter parameters: Optional query parameters for pagination and filtering
+  /// - Returns: A list of input item objects
+  func responseInputItems(
+    id: String,
+    parameters: GetInputItemsParameter?)
+    async throws -> OpenAIResponse<InputItem>
 }
 
 extension OpenAIService {
@@ -1224,7 +1263,9 @@ extension OpenAIService {
                   print(debugMessage)
                 }
                 #endif
-                throw APIError.dataCouldNotBeReadMissingData(description: debugMessage)
+                // Must finish continuation before returning to avoid hanging stream
+                continuation.finish(throwing: APIError.dataCouldNotBeReadMissingData(description: debugMessage))
+                return
               } catch {
                 #if DEBUG
                 if debugEnabled {
@@ -1232,6 +1273,7 @@ extension OpenAIService {
                 }
                 #endif
                 continuation.finish(throwing: error)
+                return
               }
             }
           }
@@ -1245,7 +1287,8 @@ extension OpenAIService {
             print(debugMessage)
           }
           #endif
-          throw APIError.dataCouldNotBeReadMissingData(description: debugMessage)
+          // Must finish continuation before returning to avoid hanging stream
+          continuation.finish(throwing: APIError.dataCouldNotBeReadMissingData(description: debugMessage))
         } catch {
           #if DEBUG
           if debugEnabled {
@@ -1375,7 +1418,9 @@ extension OpenAIService {
                   print(debugMessage)
                 }
                 #endif
-                throw APIError.dataCouldNotBeReadMissingData(description: debugMessage)
+                // Must finish continuation before returning to avoid hanging stream
+                continuation.finish(throwing: APIError.dataCouldNotBeReadMissingData(description: debugMessage))
+                return
               } catch {
                 #if DEBUG
                 if debugEnabled {
@@ -1383,6 +1428,7 @@ extension OpenAIService {
                 }
                 #endif
                 continuation.finish(throwing: error)
+                return
               }
             }
           }
@@ -1396,7 +1442,8 @@ extension OpenAIService {
             print(debugMessage)
           }
           #endif
-          throw APIError.dataCouldNotBeReadMissingData(description: debugMessage)
+          // Must finish continuation before returning to avoid hanging stream
+          continuation.finish(throwing: APIError.dataCouldNotBeReadMissingData(description: debugMessage))
         } catch {
           #if DEBUG
           if debugEnabled {

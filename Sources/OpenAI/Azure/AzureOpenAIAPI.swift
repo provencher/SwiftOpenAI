@@ -89,6 +89,9 @@ enum AzureOpenAIAPI {
   enum ResponseCategory {
     case create(deploymentID: String)
     case retrieve(responseID: String)
+    case delete(responseID: String)
+    case cancel(responseID: String)
+    case inputItems(responseID: String)
   }
 }
 
@@ -152,6 +155,9 @@ extension AzureOpenAIAPI: Endpoint {
       switch category {
       case .create: "/openai/responses"
       case .retrieve(let responseID): "/openai/responses/\(responseID)"
+      case .delete(let responseID): "/openai/responses/\(responseID)"
+      case .cancel(let responseID): "/openai/responses/\(responseID)/cancel"
+      case .inputItems(let responseID): "/openai/responses/\(responseID)/input_items"
       }
     }
   }

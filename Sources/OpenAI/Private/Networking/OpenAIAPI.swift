@@ -137,6 +137,9 @@ enum OpenAIAPI {
   enum ResponseCategory {
     case create
     case get(responseID: String)
+    case delete(responseID: String)
+    case cancel(responseID: String)
+    case inputItems(responseID: String)
   }
 }
 
@@ -273,6 +276,9 @@ extension OpenAIAPI: Endpoint {
       switch category {
       case .create: return "\(version)/responses"
       case .get(let responseID): return "\(version)/responses/\(responseID)"
+      case .delete(let responseID): return "\(version)/responses/\(responseID)"
+      case .cancel(let responseID): return "\(version)/responses/\(responseID)/cancel"
+      case .inputItems(let responseID): return "\(version)/responses/\(responseID)/input_items"
       }
     }
   }
