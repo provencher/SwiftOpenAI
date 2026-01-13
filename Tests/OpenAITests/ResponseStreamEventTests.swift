@@ -465,22 +465,41 @@ final class ResponseStreamEventTests: XCTestCase {
 
   // MARK: - Unknown Event Type Test
 
-  func testUnknownEventType() throws {
+  func testUnknownEventTypeDoesNotThrow() throws {
     let json = """
       {
-        "type": "response.unknown_event",
+        "type": "response.some_future_event",
         "data": "some data"
       }
       """
 
     let decoder = JSONDecoder()
+    let event = try decoder.decode(ResponseStreamEvent.self, from: json.data(using: .utf8)!)
 
-    do {
-      _ = try decoder.decode(ResponseStreamEvent.self, from: json.data(using: .utf8)!)
-      XCTFail("Should have thrown an error for unknown event type")
-    } catch {
-      // Expected error
-      XCTAssertTrue(error is DecodingError)
+    // Should decode as .unknown with the type captured for forward compatibility
+    if case .unknown(let type) = event {
+      XCTAssertEqual(type, "response.some_future_event")
+    } else {
+      XCTFail("Expected unknown event case, got \(event)")
+    }
+  }
+
+  // MARK: - Keepalive Event Test
+
+  func testKeepaliveEvent() throws {
+    let json = """
+      {
+        "type": "keepalive"
+      }
+      """
+
+    let decoder = JSONDecoder()
+    let event = try decoder.decode(ResponseStreamEvent.self, from: json.data(using: .utf8)!)
+
+    if case .keepalive = event {
+      // Success - keepalive events are server heartbeats with no payload
+    } else {
+      XCTFail("Expected keepalive event, got \(event)")
     }
   }
 }

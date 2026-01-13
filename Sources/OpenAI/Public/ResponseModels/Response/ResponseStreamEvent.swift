@@ -146,6 +146,9 @@ public enum ResponseStreamEvent: Decodable {
   /// Emitted as a server heartbeat to keep the connection alive (no payload)
   case keepalive
 
+  /// Unknown event type - allows forward compatibility with new API events
+  case unknown(type: String)
+
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let type = try container.decode(String.self, forKey: .type)
@@ -242,10 +245,11 @@ public enum ResponseStreamEvent: Decodable {
     case "keepalive":
       self = .keepalive
     default:
-      throw DecodingError.dataCorruptedError(
-        forKey: .type,
-        in: container,
-        debugDescription: "Unknown event type: \(type)")
+      // Forward compatibility: capture unknown events instead of failing
+      #if DEBUG
+      print("[SwiftOpenAI] Unknown ResponseStreamEvent type: \(type)")
+      #endif
+      self = .unknown(type: type)
     }
   }
 
