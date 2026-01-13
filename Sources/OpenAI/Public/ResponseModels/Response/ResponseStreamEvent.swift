@@ -143,6 +143,9 @@ public enum ResponseStreamEvent: Decodable {
   /// Emitted when an error occurs
   case error(ErrorEvent)
 
+  /// Emitted as a server heartbeat to keep the connection alive (no payload)
+  case keepalive
+
   public init(from decoder: Decoder) throws {
     let container = try decoder.container(keyedBy: CodingKeys.self)
     let type = try container.decode(String.self, forKey: .type)
@@ -236,6 +239,8 @@ public enum ResponseStreamEvent: Decodable {
       self = try .reasoningSummaryDone(ReasoningSummaryDoneEvent(from: decoder))
     case "error":
       self = try .error(ErrorEvent(from: decoder))
+    case "keepalive":
+      self = .keepalive
     default:
       throw DecodingError.dataCorruptedError(
         forKey: .type,
